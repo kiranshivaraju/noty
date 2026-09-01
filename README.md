@@ -201,11 +201,34 @@ and macOS 15+.
 open build/Noty.app
 ```
 
-`build.sh` drives `swiftc` directly over `Sources/*.swift`, assembles the
-`.app` bundle around `Info.plist`, embeds Sparkle, and signs it.
+`build.sh` drives `swiftc` directly over `Sources/Shared/*.swift` and
+`Sources/Mac/*.swift`, assembles the `.app` bundle around `Info.plist`, embeds
+Sparkle, and signs it.
 
 Sparkle is optional. Without `Sparkle/Sparkle.framework` the app still builds —
 `Updater.swift` compiles to a stub and the update menu says so.
+
+### iOS
+
+`Sources/Shared` — the SQLite store, the `Note` model, AES-GCM crypto, the
+palette and the Markdown styling engine — is written against the aliases in
+`Platform.swift` and compiles for both platforms. `Sources/Mac` and
+`Sources/iOS` hold what only one of them can have: there is no pointer to slide
+to a screen edge on iOS, so the deck has no counterpart there.
+
+```sh
+./build-ios.sh                # simulator build  -> build/ios/Noty.app
+./build-ios.sh debug run      # build, install into a booted simulator, launch
+./scripts/test-ios-engine.sh  # run the shared styling engine under UIKit
+```
+
+Each platform keeps its own notes: `Paths.support` resolves inside whichever
+sandbox it is running in, so the iOS app has a separate `notes.db` and a
+separate `note.key`. There is no sync between them.
+
+Xcode is still not needed for the simulator. A physical iPhone is a different
+matter — that needs signing and a provisioning profile, and wants a real Xcode
+project.
 
 ### Branches
 
