@@ -11,7 +11,19 @@ struct MarkdownTextView: UIViewRepresentable {
     let fontSize: CGFloat
 
     func makeUIView(context: Context) -> UITextView {
-        let tv = UITextView()
+        // Building the TextKit 1 stack by hand is what lets HidingLayoutManager
+        // in: a plain UITextView() gets TextKit 2 on iOS 16+, which has no
+        // NSLayoutManager to subclass and would leave the Markdown markers
+        // taking up space.
+        let storage = NSTextStorage(string: text)
+        let layout = HidingLayoutManager()
+        let container = NSTextContainer(
+            size: CGSize(width: 0, height: CGFloat.greatestFiniteMagnitude))
+        container.widthTracksTextView = true
+        storage.addLayoutManager(layout)
+        layout.addTextContainer(container)
+
+        let tv = UITextView(frame: .zero, textContainer: container)
         tv.delegate = context.coordinator
         tv.backgroundColor = paper
         tv.textColor = ink

@@ -61,6 +61,14 @@ struct NoteListView: View {
 struct NoteRow: View {
     let note: Note
 
+    /// RelativeDateTimeFormatter renders a just-saved note as "in 0s", since the
+    /// timestamp lands a hair in the future. Under a minute simply reads "now".
+    static func age(of date: Date) -> String {
+        let elapsed = Date().timeIntervalSince(date)
+        if elapsed < 60 { return "now" }
+        return Fmt.relative.localizedString(for: date, relativeTo: Date())
+    }
+
     var body: some View {
         HStack(spacing: 12) {
             RoundedRectangle(cornerRadius: 2)
@@ -92,7 +100,7 @@ struct NoteRow: View {
                             .font(.caption2)
                             .foregroundStyle(p.done == p.total ? .green : .secondary)
                     }
-                    Text(Fmt.relative.localizedString(for: note.modified, relativeTo: Date()))
+                    Text(Self.age(of: note.modified))
                         .font(.caption2)
                         .foregroundStyle(.tertiary)
                 }

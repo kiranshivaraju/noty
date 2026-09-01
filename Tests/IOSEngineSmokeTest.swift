@@ -6,6 +6,21 @@ import UIKit
 // live UITextView so the binary runs headless under `simctl spawn` — the app
 // itself covers the UITextView conformance.
 
+/// Wraps a real NSTextStorage + HidingLayoutManager pair, so the hiding path can
+/// be exercised without a live UITextView.
+fileprivate final class LayoutTarget: NotyStyleTarget {
+    var notyTypingAttributes: [NSAttributedString.Key: Any] = [:]
+    private let storage: NSTextStorage
+    private let layout: NSLayoutManager
+    var notyTextStorage: NSTextStorage? { storage }
+    var notyLayoutManager: NSLayoutManager? { layout }
+
+    init(storage: NSTextStorage, layout: NSLayoutManager) {
+        self.storage = storage
+        self.layout = layout
+    }
+}
+
 fileprivate final class MockTarget: NotyStyleTarget {
     var notyTypingAttributes: [NSAttributedString.Key: Any] = [:]
     let storage = NSTextStorage()
@@ -78,6 +93,33 @@ struct IOSEngineSmokeTest {
         // 7. Crypto round-trips under the iOS SDK.
         let secret = "sealed on iOS ☑"
         check(Crypto.open(Crypto.seal(secret)) == secret, "AES-GCM should round-trip")
+
+        // 8. HidingLayoutManager collapses the flagged markers to nothing under
+        //    UIKit, which is what actually makes **bold** read as bold.
+        let storage = NSTextStorage(string: "**loud** quiet")
+        let layout = HidingLayoutManager()
+        let container = NSTextContainer(
+            size: CGSize(width: 400, height: CGFloat.greatestFiniteMagnitude))
+        storage.addLayoutManager(layout)
+        layout.addTextContainer(container)
+        EditorStyleEngine.apply(
+            to: LayoutTarget(storage: storage, layout: layout),
+            ranges: [NSRange(location: 0, length: storage.length)],
+            revealing: nil,
+            ink: .black,
+            size: 14,
+            markdownEnabled: true,
+            bodyFont: { UIFont.systemFont(ofSize: $0) },
+            isCompletedTask: { Tasks.marker(of: $0) == Tasks.done })
+        layout.ensureLayout(for: container)
+
+        // Character 0 is the first '*' of the opening marker; character 2 is 'l'.
+        let markerGlyph = layout.glyphIndexForCharacter(at: 0)
+        let textGlyph = layout.glyphIndexForCharacter(at: 2)
+        check(layout.propertyForGlyph(at: markerGlyph) == .null,
+              "marker glyphs should be nulled by HidingLayoutManager")
+        check(layout.propertyForGlyph(at: textGlyph) != .null,
+              "the text between markers should still draw")
 
         if failures.isEmpty {
             print("IOSEngineSmokeTest: all checks passed")

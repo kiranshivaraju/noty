@@ -151,6 +151,7 @@ final class NoteStore: ObservableObject {
     }
 
     private func seedWelcomeNote() {
+        #if canImport(AppKit)
         create(body: """
         Welcome to Noty
 
@@ -164,5 +165,19 @@ final class NoteStore: ObservableObject {
         Inside a note: Esc closes, ⌘F finds, ⌘. cycles the colour, \
         ⌘⌫ deletes with ten seconds to undo.
         """, color: 0)
+        #else
+        create(body: """
+        Welcome to Noty
+
+        Tap the pencil to start a note, and a note to open it. \
+        Swipe one left to archive it.
+
+        ☑ tap a box to tick a task off
+        ☐ the checklist button turns a line into a task
+
+        The palette button cycles a note's colour. Everything else lives \
+        behind the ··· menu: pin, archive, delete.
+        """, color: 0)
+        #endif
     }
 }
