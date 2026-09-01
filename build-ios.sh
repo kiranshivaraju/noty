@@ -35,6 +35,7 @@ SDKROOT="$SDK" swiftc $OPT -parse-as-library -swift-version 5 \
     -sdk "$SDK" \
     "$ROOT"/Sources/Shared/*.swift \
     "$ROOT"/Sources/iOS/*.swift \
+    "$ROOT"/Sources/Intents/*.swift \
     -o "$APP/Noty"
 
 cp "$ROOT/Info-iOS.plist" "$APP/Info.plist"

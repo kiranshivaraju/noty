@@ -4,6 +4,7 @@ struct NoteListView: View {
     @ObservedObject private var store = NoteStore.shared
     @State private var path: [String] = []
     @State private var showArchive = false
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         NavigationStack(path: $path) {
@@ -18,6 +19,15 @@ struct NoteListView: View {
             .navigationTitle(showArchive ? "Archive" : "Noty")
             .navigationDestination(for: String.self) { NoteDetailView(noteID: $0) }
             .onOpenURL(perform: open)
+            // A control tap can arrive before this view exists (cold launch) or
+            // while it is already on screen, so the flag is checked on both.
+            .onAppear(perform: takePendingCapture)
+            .onChange(of: scenePhase) { _, phase in
+                if phase == .active { takePendingCapture() }
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .notyNewNoteRequested)) { _ in
+                takePendingCapture()
+            }
             .overlay { if visible.isEmpty { empty } }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -47,6 +57,15 @@ struct NoteListView: View {
     private func newNote() {
         let note = store.create()
         path.append(note.id)
+    }
+
+    /// Honours a New Note tap from Control Center. The intent cannot write the
+    /// note itself — it has no App Group and so no reach into the store — so it
+    /// raises a flag and the app does the work once it is up.
+    private func takePendingCapture() {
+        guard CaptureRequest.take() else { return }
+        showArchive = false
+        newNote()
     }
 
     /// noty:// — the same automation surface the Mac exposes, minus the windows

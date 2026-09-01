@@ -7,9 +7,9 @@ import WidgetKit
 // but Control Center is reachable from inside any app with one swipe, which is
 // the property that made the deck worth having.
 //
-// The button only opens a URL, so this extension shares no data with the app and
-// therefore needs no App Group — which is what keeps it working on free
-// provisioning. The app does the writing when it comes up.
+// NewNoteIntent carries the tap: it opens the app, which then makes the note.
+// The extension stores nothing and shares no container with the app, so it needs
+// no App Group — which is what keeps it working on free provisioning.
 
 @main
 struct NotyControlBundle: WidgetBundle {
@@ -23,7 +23,7 @@ struct NewNoteControl: ControlWidget {
 
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(kind: Self.kind) {
-            ControlWidgetButton(action: OpenURLIntent(URL(string: "noty://new")!)) {
+            ControlWidgetButton(action: NewNoteIntent()) {
                 Label("New Note", systemImage: "square.and.pencil")
             }
         }

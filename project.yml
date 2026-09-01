@@ -30,6 +30,7 @@ targets:
     sources:
       - path: Sources/Shared
       - path: Sources/iOS
+      - path: Sources/Intents
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.kiranshivaraju.noty
@@ -49,6 +50,9 @@ targets:
     deploymentTarget: "18.0"
     sources:
       - path: Sources/Control
+      # Same file in both targets: the system will not launch the app from a
+      # control unless the intent is a member of the app as well.
+      - path: Sources/Intents
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.kiranshivaraju.noty.control

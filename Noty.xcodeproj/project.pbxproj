@@ -16,7 +16,9 @@
 		48A8D0F7C681A08C255BE9E8 /* NoteDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5924A32F337C9B437C2616B3 /* NoteDetailView.swift */; };
 		4DAD54BA5E8119BDCA55C101 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = C489805FEAE76AC2F7FEAC17 /* Store.swift */; };
 		4F0EE444E1F58CB920415731 /* Typography.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CA2DE5EEED53E355110DE43 /* Typography.swift */; };
+		4F4F9203D82F88CD3A7D879A /* NewNoteIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596E646B422A1DF924D351C4 /* NewNoteIntent.swift */; };
 		5F694C45EB5C1F2D8A75F1DC /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2921C3AB114E4BC134C98D8A /* WidgetKit.framework */; };
+		6AD7375A25879DEF08859D40 /* NewNoteIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 596E646B422A1DF924D351C4 /* NewNoteIntent.swift */; };
 		6F897F5393EF2D4838EB0E70 /* NoteStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 05B35B291DAAA9FDCBF7D163 /* NoteStore.swift */; };
 		B981D5735CA64491C0B45A4B /* NotyControl.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B04498B656DCC20AB371E84F /* NotyControl.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BB7D6B02FC19676B0A721E7F /* AppIntents.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6009FCE1A41AAFFD5E07D8CC /* AppIntents.framework */; };
@@ -60,6 +62,7 @@
 		4C8305BFD58D482634883C99 /* NotyApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotyApp.swift; sourceTree = "<group>"; };
 		4FF921FDA7254120974A3D48 /* HidingLayoutManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HidingLayoutManager.swift; sourceTree = "<group>"; };
 		5924A32F337C9B437C2616B3 /* NoteDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteDetailView.swift; sourceTree = "<group>"; };
+		596E646B422A1DF924D351C4 /* NewNoteIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewNoteIntent.swift; sourceTree = "<group>"; };
 		5B8B4CB7D79DAD5D55798EC4 /* Noty.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Noty.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6009FCE1A41AAFFD5E07D8CC /* AppIntents.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppIntents.framework; path = System/Library/Frameworks/AppIntents.framework; sourceTree = SDKROOT; };
 		6CA2DE5EEED53E355110DE43 /* Typography.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Typography.swift; sourceTree = "<group>"; };
@@ -112,6 +115,7 @@
 			isa = PBXGroup;
 			children = (
 				DDED84CD8A8FD1A8FCF92633 /* Control */,
+				DC075A21800FCA16166E3008 /* Intents */,
 				78E1C83DB990B0A1DEF12E14 /* iOS */,
 				1E5025BC23D210B00AE27CA4 /* Shared */,
 			);
@@ -138,6 +142,14 @@
 				6CA2DE5EEED53E355110DE43 /* Typography.swift */,
 			);
 			path = iOS;
+			sourceTree = "<group>";
+		};
+		DC075A21800FCA16166E3008 /* Intents */ = {
+			isa = PBXGroup;
+			children = (
+				596E646B422A1DF924D351C4 /* NewNoteIntent.swift */,
+			);
+			path = Intents;
 			sourceTree = "<group>";
 		};
 		DDED84CD8A8FD1A8FCF92633 /* Control */ = {
@@ -245,6 +257,7 @@
 				2CCBDB6DCCE01E04D9662A39 /* EditorStyleEngine.swift in Sources */,
 				D518EF2A70886AB78BA52B2F /* HidingLayoutManager.swift in Sources */,
 				235B00370A570F62FEC73461 /* MarkdownTextView.swift in Sources */,
+				6AD7375A25879DEF08859D40 /* NewNoteIntent.swift in Sources */,
 				48A8D0F7C681A08C255BE9E8 /* NoteDetailView.swift in Sources */,
 				DD9DFB8B8CA78E23C3C20472 /* NoteListView.swift in Sources */,
 				6F897F5393EF2D4838EB0E70 /* NoteStore.swift in Sources */,
@@ -260,6 +273,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4F4F9203D82F88CD3A7D879A /* NewNoteIntent.swift in Sources */,
 				CB172DBADCFC5F983938D60A /* NotyControl.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
