@@ -231,9 +231,18 @@ matter — that needs signing and a provisioning profile, so there is an Xcode
 project generated from `project.yml`:
 
 ```sh
-./scripts/gen-xcode.sh   # regenerate Noty.xcodeproj after adding a source file
-open Noty.xcodeproj      # set your team under Signing & Capabilities, then run
+./scripts/gen-xcode.sh       # regenerate Noty.xcodeproj after adding a source file
+./scripts/install-device.sh  # build, sign and install on a connected iPhone
 ```
+
+On a first install with free personal-team signing, iOS will refuse to launch
+the app until the certificate is trusted on the phone: **Settings → General →
+VPN & Device Management → Developer App → Trust**.
+
+Free provisioning also expires after **seven days**, after which the app stops
+launching until `install-device.sh` is run again. Reinstalling over the top
+keeps the container and the notes in it; deleting the app from the Home Screen
+does not, and with no sync there is no second copy.
 
 Sources are listed explicitly in the project, so a **new file needs a
 regenerate** — the simulator script globs and will not notice the difference.
