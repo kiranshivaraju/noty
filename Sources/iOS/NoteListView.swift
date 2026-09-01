@@ -17,6 +17,7 @@ struct NoteListView: View {
             .listStyle(.insetGrouped)
             .navigationTitle(showArchive ? "Archive" : "Noty")
             .navigationDestination(for: String.self) { NoteDetailView(noteID: $0) }
+            .onOpenURL(perform: open)
             .overlay { if visible.isEmpty { empty } }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -46,6 +47,25 @@ struct NoteListView: View {
     private func newNote() {
         let note = store.create()
         path.append(note.id)
+    }
+
+    /// noty:// — the same automation surface the Mac exposes, minus the windows
+    /// this platform does not have. The Control Center button lands here.
+    ///
+    ///   noty://new?text=…   create a note and open it
+    ///   noty://capture      the same thing, empty
+    ///   noty://all          back to the list
+    private func open(_ url: URL) {
+        switch NotyURL.route(url) {
+        case .newNote(let text):
+            showArchive = false
+            path = [store.create(body: text).id]
+        case .allNotes:
+            showArchive = false
+            path = []
+        case .settings, .unknown:
+            break
+        }
     }
 
     /// Swipe deletes archive rather than destroy, matching the Mac app — a note

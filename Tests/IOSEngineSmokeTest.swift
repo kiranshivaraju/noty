@@ -121,6 +121,21 @@ struct IOSEngineSmokeTest {
         check(layout.propertyForGlyph(at: textGlyph) != .null,
               "the text between markers should still draw")
 
+        // 9. The noty:// surface the Control Center button fires.
+        check(NotyURL.route(URL(string: "noty://new")!) == .newNote(text: ""),
+              "noty://new should open an empty note")
+        check(NotyURL.route(URL(string: "noty://new?text=milk%20and%20eggs")!)
+                == .newNote(text: "milk and eggs"),
+              "noty://new?text= should carry its text through, decoded")
+        check(NotyURL.route(URL(string: "noty://capture")!) == .newNote(text: ""),
+              "noty://capture should behave as new")
+        check(NotyURL.route(URL(string: "noty://all")!) == .allNotes,
+              "noty://all should route to the list")
+        check(NotyURL.route(URL(string: "https://example.com/new")!) == .unknown,
+              "a foreign scheme must never be routed")
+        check(NotyURL.route(URL(string: "noty://wat")!) == .unknown,
+              "an unknown host should be ignored rather than guessed at")
+
         if failures.isEmpty {
             print("IOSEngineSmokeTest: all checks passed")
         } else {

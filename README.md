@@ -227,8 +227,32 @@ sandbox it is running in, so the iOS app has a separate `notes.db` and a
 separate `note.key`. There is no sync between them.
 
 Xcode is still not needed for the simulator. A physical iPhone is a different
-matter — that needs signing and a provisioning profile, and wants a real Xcode
-project.
+matter — that needs signing and a provisioning profile, so there is an Xcode
+project generated from `project.yml`:
+
+```sh
+./scripts/gen-xcode.sh   # regenerate Noty.xcodeproj after adding a source file
+open Noty.xcodeproj      # set your team under Signing & Capabilities, then run
+```
+
+Sources are listed explicitly in the project, so a **new file needs a
+regenerate** — the simulator script globs and will not notice the difference.
+
+#### Quick capture
+
+There is no way to put a deck on the edge of an iPhone screen: iOS does not let
+an app draw over another app, and Live Activities — the closest thing — expire
+after twelve hours and take no text input. What survives the translation is the
+part that mattered, capture that costs one gesture from inside whatever you are
+doing.
+
+`NotyControl` is a Control Center button that fires `noty://new`, which the app
+routes through `NotyURL`. Because the button only opens a URL and shares no data
+with the app, the extension needs no App Group, and so it still works under free
+personal-team signing. Add it in Settings → Control Center after installing.
+
+The same URL drives a Back Tap or an Action Button through Shortcuts, with no
+code at all: Shortcuts → new shortcut → Open URL → `noty://new`.
 
 ### Branches
 

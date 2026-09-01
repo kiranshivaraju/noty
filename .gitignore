@@ -6,3 +6,8 @@ Sparkle/
 sparkle_keys/
 appcast.xml.bak
 .omc/
+
+# Xcode
+xcuserdata/
+*.xcuserstate
+DerivedData/

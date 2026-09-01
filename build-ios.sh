@@ -12,7 +12,7 @@ set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 APP="$ROOT/build/ios/Noty.app"
-BUNDLE_ID="app.noty.Noty"
+BUNDLE_ID="com.kiranshivaraju.noty"
 DEPLOYMENT_TARGET="17.0"
 
 MODE="${1:-debug}"
@@ -38,6 +38,7 @@ SDKROOT="$SDK" swiftc $OPT -parse-as-library -swift-version 5 \
     -o "$APP/Noty"
 
 cp "$ROOT/Info-iOS.plist" "$APP/Info.plist"
+plutil -replace CFBundleIdentifier -string "$BUNDLE_ID" "$APP/Info.plist"
 plutil -replace CFBundleSupportedPlatforms -json '["iPhoneSimulator"]' "$APP/Info.plist"
 plutil -replace DTPlatformName -string "iphonesimulator" "$APP/Info.plist"
 
