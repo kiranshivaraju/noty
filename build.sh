@@ -39,7 +39,7 @@ swiftc $OPT -parse-as-library -swift-version 5 \
     -target arm64-apple-macosx15.0 \
     -sdk "$SDK" \
     "${SPARKLE_FLAGS[@]+"${SPARKLE_FLAGS[@]}"}" \
-    "$ROOT"/Sources/*.swift \
+    "$ROOT"/Sources/Shared/*.swift "$ROOT"/Sources/Mac/*.swift \
     -o "$APP/Contents/MacOS/Noty"
 
 cp "$ROOT/Info.plist" "$APP/Contents/Info.plist"

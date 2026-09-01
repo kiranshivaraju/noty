@@ -8,7 +8,7 @@ OUT="$(mktemp -d "${TMPDIR:-/tmp}/noty-editor-tests.XXXXXX")"
 trap 'rm -rf "$OUT"' EXIT
 
 APP_SOURCES=()
-for SOURCE_FILE in "$ROOT"/Sources/*.swift; do
+for SOURCE_FILE in "$ROOT"/Sources/Shared/*.swift "$ROOT"/Sources/Mac/*.swift; do
     [ "$(basename "$SOURCE_FILE")" = "Main.swift" ] || APP_SOURCES+=("$SOURCE_FILE")
 done
 

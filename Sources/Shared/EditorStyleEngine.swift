@@ -1,4 +1,8 @@
+#if canImport(AppKit)
 import AppKit
+#elseif canImport(UIKit)
+import UIKit
+#endif
 
 extension NSAttributedString.Key {
     /// Marks Markdown punctuation that should occupy no glyph space while the
@@ -34,7 +38,7 @@ struct EditorEditAccumulator {
 /// planned as one or more complete-line ranges; full-document work is reserved
 /// for initial content and explicit configuration changes.
 enum EditorStyleEngine {
-    typealias FontProvider = (CGFloat) -> NSFont
+    typealias FontProvider = (CGFloat) -> PlatformFont
     typealias CompletedTaskPredicate = (String) -> Bool
 
     private static let heading = try! NSRegularExpression(
@@ -97,18 +101,18 @@ enum EditorStyleEngine {
     /// Apply base, Markdown, and completed-task attributes to scoped ranges.
     /// The string and selection are never mutated.
     @discardableResult
-    static func apply(to textView: NSTextView,
+    static func apply(to textView: NotyStyleTarget,
                       ranges: [NSRange],
                       revealing activeLine: NSRange?,
-                      ink: NSColor,
+                      ink: PlatformColor,
                       size: CGFloat,
                       markdownEnabled: Bool,
                       bodyFont: @escaping FontProvider,
                       isCompletedTask: @escaping CompletedTaskPredicate) -> [NSRange] {
         let font = bodyFont(size)
-        textView.typingAttributes = [.font: font, .foregroundColor: ink]
+        textView.notyTypingAttributes = [.font: font, .foregroundColor: ink]
 
-        guard let storage = textView.textStorage else { return [] }
+        guard let storage = textView.notyTextStorage else { return [] }
         let planned = normalizedStyleRanges(ranges, length: storage.length)
         guard !planned.isEmpty else { return [] }
 
@@ -140,12 +144,12 @@ enum EditorStyleEngine {
 
             // Hidden markers require glyph regeneration, but only for the lines
             // whose attributes were actually touched.
-            textView.layoutManager?.invalidateGlyphs(forCharacterRange: range,
+            textView.notyLayoutManager?.invalidateGlyphs(forCharacterRange: range,
                                                       changeInLength: 0,
                                                       actualCharacterRange: nil)
-            textView.layoutManager?.invalidateLayout(forCharacterRange: range,
+            textView.notyLayoutManager?.invalidateLayout(forCharacterRange: range,
                                                       actualCharacterRange: nil)
-            textView.layoutManager?.invalidateDisplay(forCharacterRange: range)
+            textView.notyLayoutManager?.invalidateDisplay(forCharacterRange: range)
         }
         return planned
     }
@@ -156,7 +160,7 @@ enum EditorStyleEngine {
     private static let markdownChars = CharacterSet(charactersIn: "*_`~#>-+[")
 
     private static func markdown(_ storage: NSTextStorage, _ fragment: String,
-                                 offset: Int, ink: NSColor, size: CGFloat,
+                                 offset: Int, ink: PlatformColor, size: CGFloat,
                                  revealing activeLine: NSRange?,
                                  bodyFont: @escaping FontProvider) {
         let local = fragment as NSString
@@ -224,7 +228,7 @@ enum EditorStyleEngine {
         }
         each(code) { match in
             storage.addAttribute(.font,
-                                 value: NSFont.monospacedSystemFont(ofSize: size - 0.5,
+                                 value: PlatformFont.monospacedSystemFont(ofSize: size - 0.5,
                                                                     weight: .regular),
                                  range: global(match.range(at: 1)))
             storage.addAttribute(.backgroundColor, value: ink.withAlphaComponent(0.07),
@@ -253,7 +257,7 @@ enum EditorStyleEngine {
     }
 
     private static func styleCompletedTasks(_ storage: NSTextStorage, _ fragment: String,
-                                            offset: Int, ink: NSColor,
+                                            offset: Int, ink: PlatformColor,
                                             isCompletedTask: @escaping CompletedTaskPredicate) {
         let local = fragment as NSString
         let full = NSRange(location: 0, length: local.length)
@@ -267,10 +271,9 @@ enum EditorStyleEngine {
         }
     }
 
-    private static func heavier(_ size: CGFloat, bodyFont: FontProvider) -> NSFont {
+    private static func heavier(_ size: CGFloat, bodyFont: FontProvider) -> PlatformFont {
         let base = bodyFont(size)
-        let boldFont = NSFontManager.shared.convert(base, toHaveTrait: .boldFontMask)
-        return boldFont != base ? boldFont : NSFont.systemFont(ofSize: size, weight: .semibold)
+        return PlatformFont.noty_bolder(than: base, size: size)
     }
 
     private static func clamped(_ range: NSRange, to length: Int) -> NSRange? {
